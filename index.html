@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="bn">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>আমার AI ভিডিও স্টুডিও</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <style>
+    :root{font-family:system-ui,"Noto Sans Bengali",sans-serif;color:#eef3ff;background:#0b1220}
+    *{box-sizing:border-box}body{margin:0;background:linear-gradient(150deg,#101d32,#090e18);min-height:100vh}
+    .wrap{max-width:760px;margin:auto;padding:22px 16px 40px}.top{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+    .logo{width:46px;height:46px;border-radius:14px;background:linear-gradient(135deg,#16b8a6,#5368ff);display:grid;place-items:center;font-size:24px}
+    h1{font-size:22px;margin:0}.sub{color:#9eacc4;font-size:13px;margin-top:3px}
+    .card{background:#151f30;border:1px solid #29364b;border-radius:18px;padding:18px;margin:14px 0}
+    label{display:block;font-weight:650;margin:13px 0 7px}textarea,select,input{width:100%;background:#0d1625;color:#f4f7ff;border:1px solid #34445e;border-radius:12px;padding:12px;font:inherit}
+    textarea{min-height:125px;resize:vertical} .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .choices{display:flex;gap:8px;flex-wrap:wrap}.choice{border:1px solid #40516d;border-radius:999px;padding:9px 13px;color:#cbd6e8;background:#101a2a;cursor:pointer}
+    .choice.active{background:#174c54;border-color:#2dd4bf;color:white}
+    button{border:0;border-radius:12px;padding:13px 16px;font:inherit;font-weight:700;cursor:pointer}
+    .primary{background:linear-gradient(90deg,#14b8a6,#3978ef);color:white;width:100%;margin-top:16px}
+    .secondary{background:#26364d;color:#e8efff}.note{font-size:13px;line-height:1.6;color:#aebbd0}
+    .status{display:none;background:#102d2b;border:1px solid #1c766d;padding:12px;border-radius:12px;margin-top:12px;color:#c6fff3}
+    .preview{border:1px dashed #40516d;border-radius:14px;padding:20px;text-align:center;color:#9eacc4}
+    footer{color:#77869f;font-size:12px;text-align:center;margin-top:24px}
+    @media(max-width:520px){.grid{grid-template-columns:1fr}h1{font-size:19px}}
+  </style>
+</head>
+<body><main class="wrap">
+  <header class="top"><div class="logo">▶</div><div><h1>আমার AI ভিডিও স্টুডিও</h1><div class="sub">বাংলা AI ভিডিও তৈরির ওয়ার্কস্পেস</div></div></header>
+  <section class="card">
+    <h2 style="margin:0 0 6px;font-size:18px">নতুন ভিডিও তৈরি করুন</h2>
+    <p class="note">আপনার দৃশ্যের বর্ণনা লিখুন। বাস্তবধর্মী অথবা কার্টুন—দুই ধরনের ভিডিওর জন্য প্রস্তুত।</p>
+    <label for="prompt">ভিডিওর বর্ণনা</label>
+    <textarea id="prompt" placeholder="যেমন: বাংলাদেশের বেনাপোল সীমান্তের পাশে একটি নদী, সবুজ মাঠ, নদীর তীরে নিরাপত্তা চৌকি..."></textarea>
+    <label>ভিডিওর ধরন</label>
+    <div class="choices" id="style"><button class="choice active" data-value="cartoon">3D কার্টুন</button><button class="choice" data-value="realistic">বাস্তবধর্মী</button></div>
+    <div class="grid">
+      <div><label for="duration">দৈর্ঘ্য</label><select id="duration"><option value="5">৫ সেকেন্ড</option><option value="10">১০ সেকেন্ড</option><option value="15">১৫ সেকেন্ড</option><option value="30">৩০ সেকেন্ড</option></select></div>
+      <div><label for="ratio">ভিডিওর অনুপাত</label><select id="ratio"><option value="9:16">9:16 — মোবাইল</option><option value="16:9">16:9 — ইউটিউব</option><option value="1:1">1:1 — বর্গাকার</option></select></div>
+    </div>
+    <button class="primary" id="generate">ভিডিও তৈরির অনুরোধ প্রস্তুত করুন</button>
+    <div class="status" id="status"></div>
+  </section>
+  <section class="card">
+    <h3 style="margin:0 0 12px">ভিডিওর প্রিভিউ</h3>
+    <div class="preview">ভিডিও তৈরি হলে এখানে দেখা যাবে।<br><span style="font-size:30px">🎬</span></div>
+    <p class="note">এই প্রথম সংস্করণটি অ্যাপের ইন্টারফেস। আসল ভিডিও রেন্ডার করতে পরের ধাপে একটি AI video API সংযুক্ত করতে হবে। API ছাড়া এই পেজ নিজে ভিডিও তৈরি বা আপলোড করে না।</p>
+  </section>
+  <footer>প্রাথমিক প্রোটোটাইপ • ওয়েব ও Android-এ ইনস্টলযোগ্য PWA</footer>
+</main>
+<script>
+  let style='cartoon';
+  document.querySelectorAll('#style .choice').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('#style .choice').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');style=b.dataset.value;
+  }));
+  document.getElementById('generate').addEventListener('click',()=>{
+    const p=document.getElementById('prompt').value.trim(), box=document.getElementById('status');
+    box.style.display='block';
+    if(!p){box.textContent='আগে ভিডিওর বর্ণনা লিখুন।';return;}
+    const details={prompt:p,style,duration:document.getElementById('duration').value,aspect_ratio:document.getElementById('ratio').value};
+    box.textContent='আপনার ভিডিও সেটিংস প্রস্তুত হয়েছে। API সংযুক্ত হলে এখান থেকেই ভিডিও তৈরি শুরু হবে।';
+    const blob=new Blob([JSON.stringify(details,null,2)],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='video-request.json';a.click();URL.revokeObjectURL(a.href);
+  });
+  if('serviceWorker' in navigator) window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js'));
+</script></body></html>
